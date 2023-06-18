@@ -4,7 +4,6 @@
 using namespace std;
 
 
-//global parametr
 float p, k, m;
 
 float ddx(float x, float y, float z)
