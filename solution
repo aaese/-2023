@@ -1,0 +1,72 @@
+#include <iostream>
+#include <cmath>
+#include <vector>
+using namespace std;
+
+
+//global parametr
+float p, k, m;
+
+float ddx(float x, float y, float z)
+{
+    return -(p * y + k * z) / m;
+}
+
+vector<float> runge_kutta(float x0, float y0, float z0, float xt, float h)
+{
+    int n = (int)((xt - x0) / h);
+    float k1, k2, k3, k4;
+    float l1, l2, l3, l4;
+
+    float x = x0;
+    float y = y0;
+    float z = z0;
+
+    for (int i = 1; i <= n; i++)
+    {
+
+        k1 = h * z;
+        l1 = h * ddx(x, y, z);
+        k2 = h * (z + 0.5 * l1);
+        l2 = h * ddx(x + 0.5 * h, y + 0.5 * k1, z + 0.5 * l1);
+        k3 = h * (z + 0.5 * l2);
+        l3 = h * ddx(x + 0.5 * h, y + 0.5 * k2, z + 0.5 * l2);
+        k4 = h * (z + l3);
+        l4 = h * ddx(x + h, y + k3, z + l3);
+
+        y = y + (1.0 / 6.0) * (k1 + 2 * k2 + 2 * k3 + k4);
+        z = z + (1.0 / 6.0) * (l1 + 2 * l2 + 2 * l3 + l4);
+        x = x + h;
+        //std::cout << y << "    ";
+        //std::cout << z << "\n";
+    }
+    vector<float> a;
+    a.push_back(y);
+    a.push_back(z);
+    return a;
+}
+
+int main()
+{
+    float x0, y0, z0, x, z, h;
+
+    //параметры функции
+    p = 5;
+    k = 1;
+    m = 10;
+    // интервал интегрирования
+    x0 = 0;
+    x = 10;
+
+    // начальное условие
+    y0 = 1;
+    z0 = 0;
+
+    h = 0.01;
+    vector<float> y;
+    y = runge_kutta(x0, y0, z0, x, h);
+    cout << "y(0)  = " << y0 << '\n';
+    cout << "y'(0) = " << z0 << '\n';
+    cout << "integration interval " << x0 << "->" << x << '\n';
+    cout << "y  = " << y[0] << '\n' << "y\' = " << y[1] << '\n';
+}
